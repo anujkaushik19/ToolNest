@@ -111,7 +111,7 @@ function PdfPasswordTool({ mode }: { mode: Mode }) {
   if (!file) {
     return (
       <div className="space-y-4">
-        <ServerNotice mode={mode} />
+        <ServerNotice />
         <Dropzone
           accept=".pdf"
           onFiles={onFiles}
@@ -123,7 +123,7 @@ function PdfPasswordTool({ mode }: { mode: Mode }) {
 
   return (
     <div className="space-y-6">
-      <ServerNotice mode={mode} />
+      <ServerNotice />
 
       {error && (
         <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
@@ -220,7 +220,7 @@ function PdfPasswordTool({ mode }: { mode: Mode }) {
   );
 }
 
-function ServerNotice({ mode }: { mode: Mode }) {
+function ServerNotice() {
   return (
     <div className="flex items-start gap-3 rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-100/90">
       <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />

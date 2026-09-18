@@ -53,7 +53,7 @@ export function Features() {
           Built to feel <span className="gradient-text">effortless</span>
         </h2>
         <p className="mt-4 text-lg text-foreground/60">
-          Top-class quality without the price tag or the clutter. Here's what
+          Top-class quality without the price tag or the clutter. Here&apos;s what
           sets us apart.
         </p>
       </Reveal>

@@ -30,7 +30,7 @@ export function HowItWorks() {
           How it works
         </span>
         <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
-          Three steps. <span className="gradient-text">That's it.</span>
+          Three steps. <span className="gradient-text">That&apos;s it.</span>
         </h2>
       </Reveal>
 

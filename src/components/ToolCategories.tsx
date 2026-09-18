@@ -17,7 +17,7 @@ export function ToolCategories() {
           One portal. <span className="gradient-text">Every format.</span>
         </h2>
         <p className="mt-4 text-lg text-foreground/60">
-          Stop hopping between websites. Whatever the file, there's a tool for
+          Stop hopping between websites. Whatever the file, there&apos;s a tool for
           it here — fast, free and beautifully simple.
         </p>
       </Reveal>
