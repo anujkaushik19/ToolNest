@@ -5,6 +5,7 @@ import {
   Video,
   QrCode,
   Code2,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 
@@ -68,6 +69,13 @@ export const categories: ToolCategory[] = [
     icon: Code2,
     gradient: "from-cyan-500 to-sky-500",
     description: "Format, decode, hash and generate — fast developer utilities, all in your browser.",
+  },
+  {
+    id: "creators",
+    title: "For Creators",
+    icon: Sparkles,
+    gradient: "from-purple-500 to-pink-500",
+    description: "Resize, caption and package content for Instagram, Reels and Stories — private, in your browser.",
   },
 ];
 
@@ -275,6 +283,31 @@ export const tools: Tool[] = [
     name: "Regex Tester",
     category: "code",
     description: "Test regular expressions live with match highlighting and groups.",
+    status: "live",
+  },
+  // Creators
+  {
+    slug: "resize-for-instagram",
+    name: "Resize for Instagram",
+    category: "creators",
+    description:
+      "Resize photos & videos to perfect Instagram sizes — Reels & Stories 9:16, feed 4:5, square 1:1 — right in your browser.",
+    status: "live",
+  },
+  {
+    slug: "instagram-carousel-splitter",
+    name: "Carousel Splitter",
+    category: "creators",
+    description:
+      "Slice one wide photo into a seamless multi-slide Instagram carousel — perfect panoramas & swipeable posts, all in your browser.",
+    status: "live",
+  },
+  {
+    slug: "auto-caption-video",
+    name: "Auto Caption Video",
+    category: "creators",
+    description:
+      "Auto-transcribe and burn trendy captions onto your Reels — AI speech-to-text runs on your device, so your video never leaves your browser.",
     status: "live",
   },
 ];

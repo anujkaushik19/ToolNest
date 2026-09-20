@@ -30,6 +30,9 @@ import { JwtDecoder } from "@/components/tools/JwtDecoder";
 import { UuidGenerator } from "@/components/tools/UuidGenerator";
 import { HashGenerator } from "@/components/tools/HashGenerator";
 import { RegexTester } from "@/components/tools/RegexTester";
+import { AspectRatioResizer } from "@/components/tools/AspectRatioResizer";
+import { CarouselSplitter } from "@/components/tools/CarouselSplitter";
+import { CaptionBurner } from "@/components/tools/CaptionBurner";
 import { getToolBySlug, tools } from "@/lib/tools";
 
 type Params = { slug: string };
@@ -78,6 +81,9 @@ const liveTools: Record<string, React.ComponentType> = {
   "uuid-generator": UuidGenerator,
   "hash-generator": HashGenerator,
   "regex-tester": RegexTester,
+  "resize-for-instagram": AspectRatioResizer,
+  "instagram-carousel-splitter": CarouselSplitter,
+  "auto-caption-video": CaptionBurner,
 };
 
 export default function ToolPage({ params }: { params: Params }) {
