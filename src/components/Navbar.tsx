@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Layers, Menu, X } from "lucide-react";
+import { Layers, Menu, Sparkles, X } from "lucide-react";
 
 const links = [
   { label: "Tools", href: "#tools" },
@@ -60,6 +60,13 @@ export function Navbar() {
 
           <div className="hidden items-center gap-3 md:flex">
             <a
+              href="/studio"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm font-semibold text-foreground/90 transition-colors hover:bg-white/10"
+            >
+              <Sparkles className="h-4 w-4 text-accent-fuchsia" />
+              Creator Studio
+            </a>
+            <a
               href="#"
               className="text-sm font-medium text-foreground/70 transition-colors hover:text-foreground"
             >
@@ -101,6 +108,14 @@ export function Navbar() {
                     {l.label}
                   </a>
                 ))}
+                <a
+                  href="/studio"
+                  onClick={() => setOpen(false)}
+                  className="mt-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-center text-sm font-semibold text-foreground/90"
+                >
+                  <Sparkles className="h-4 w-4 text-accent-fuchsia" />
+                  Creator Studio
+                </a>
                 <a
                   href="#tools"
                   onClick={() => setOpen(false)}
