@@ -2,6 +2,7 @@ import { cache } from "react";
 import { buildDemoData } from "./demo";
 import { fetchCreatorData } from "./instagram";
 import { getConnection } from "./session";
+import { getFollowerHistory } from "./history";
 import type { CreatorData } from "./types";
 
 // Single source of truth for the Studio. If the user has connected their
@@ -10,10 +11,15 @@ import type { CreatorData } from "./types";
 // dashboard is never broken. cache() dedupes the fetch across the layout and
 // page within a single request.
 export const getStudioData = cache(async (): Promise<CreatorData> => {
-  const conn = getConnection();
+  const conn = await getConnection();
   if (conn) {
     try {
-      return await fetchCreatorData(conn.token, conn.igId);
+      const data = await fetchCreatorData(conn.token, conn.igId);
+      // Prefer real day-by-day history collected by the cron over the Graph
+      // API's short reconstructed window, once we've banked enough snapshots.
+      const history = await getFollowerHistory(conn.igId);
+      if (history.length >= 2) data.snapshots = history;
+      return data;
     } catch {
       // Token expired or API hiccup — show demo rather than an error page.
       return buildDemoData();
@@ -22,9 +28,10 @@ export const getStudioData = cache(async (): Promise<CreatorData> => {
   return buildDemoData();
 });
 
-export function isConnected(): boolean {
-  return getConnection() !== null;
+export async function isConnected(): Promise<boolean> {
+  return (await getConnection()) !== null;
 }
 
 export * from "./types";
 export * from "./metrics";
+export * from "./brief";

@@ -14,12 +14,12 @@ const MESSAGES: Record<string, { tone: "ok" | "warn" | "error"; text: string }> 
   },
 };
 
-export default function ConnectPage({
+export default async function ConnectPage({
   searchParams,
 }: {
   searchParams: { status?: string; message?: string };
 }) {
-  const conn = getConnection();
+  const conn = await getConnection();
   const configured = isConfigured();
   const status = searchParams.status ? MESSAGES[searchParams.status] : undefined;
 

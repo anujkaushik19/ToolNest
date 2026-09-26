@@ -74,24 +74,57 @@ function iso(d: Date) {
   return d.toISOString().slice(0, 10);
 }
 
-export function buildDemoData(): CreatorData {
-  const rand = mulberry32(20260921);
+// A creator's recent trajectory. Drives the demo so the agency roster shows a
+// realistic spread of risk (one growing, one fading, one gone quiet, etc.).
+// `undefined` = the original healthy baseline, so existing callers are unchanged.
+export type DemoHealth = "growing" | "steady" | "declining" | "stalled" | "gap";
+
+export interface DemoOptions {
+  seed?: number;
+  username?: string;
+  name?: string;
+  bio?: string;
+  niche?: string;
+  startFollowers?: number;
+  followsCount?: number;
+  demographics?: Demographics;
+  health?: DemoHealth;
+}
+
+// Per-day multipliers that bend a creator's recent weeks toward a health story.
+function healthFactors(health: DemoHealth | undefined, day: number) {
+  if (health === "gap") return { skip: day < 9, view: 1, follow: 1, organic: day < 9 ? 0.15 : 1 };
+  if (health === "declining") {
+    const f = day < 21 ? 0.5 + (day / 21) * 0.5 : 1; // fades toward today
+    return { skip: false, view: f, follow: 1, organic: day < 21 ? 0.3 : 1 };
+  }
+  if (health === "stalled") {
+    return { skip: false, view: day < 21 ? 0.9 : 1, follow: day < 21 ? 0.25 : 1, organic: day < 21 ? 0.12 : 1 };
+  }
+  return { skip: false, view: 1, follow: 1, organic: 1 }; // growing / steady / default
+}
+
+export function buildDemoData(opts: DemoOptions = {}): CreatorData {
+  const rand = mulberry32(opts.seed ?? 20260921);
+  const health = opts.health;
   const account = {
-    username: "learn.with.arjun",
-    name: "Arjun · Tech & Learning",
-    biography: "I help you learn to code & grow online · new Reel every 2 days",
-    niche: "Tech & Education",
+    username: opts.username ?? "learn.with.arjun",
+    name: opts.name ?? "Arjun · Tech & Learning",
+    biography: opts.bio ?? "I help you learn to code & grow online · new Reel every 2 days",
+    niche: opts.niche ?? "Tech & Education",
     followersCount: 0, // filled after snapshots
-    followsCount: 812,
+    followsCount: opts.followsCount ?? 812,
     mediaCount: 0,
   };
 
   // Base follower level ~90 days ago; posts add follows on their day.
-  const startFollowers = 16850;
+  const startFollowers = opts.startFollowers ?? 16850;
 
   // 1) generate media across the window
   const media: Media[] = [];
   for (let day = DAYS - 1; day >= 0; day--) {
+    const hf = healthFactors(health, day);
+    if (hf.skip) continue; // gone-quiet creators stop posting recently
     // ~ post every other day
     if (rand() > 0.52) continue;
     const t = TOPICS[Math.floor(pickWeightedIndex(TOPICS, rand()))];
@@ -101,14 +134,14 @@ export function buildDemoData(): CreatorData {
 
     const followerScale = startFollowers + (DAYS - day) * 18;
     const noise = 0.7 + rand() * 0.9;
-    const views = Math.round(followerScale * 2.4 * t.viewsMul * noise);
+    const views = Math.round(followerScale * 2.4 * t.viewsMul * noise * hf.view);
     const reach = Math.round(views * (0.86 + rand() * 0.1));
     const likes = Math.round(views * (0.03 + rand() * 0.03));
     const comments = Math.round(views * (0.002 + rand() * 0.004));
     const saved = Math.round(views * (0.004 * t.saveTilt) * (0.7 + rand() * 0.7));
     const shares = Math.round(views * (0.003 * t.saveTilt) * (0.7 + rand() * 0.7));
     const profileVisits = Math.round(views * (0.01 * t.pvTilt) * (0.7 + rand() * 0.7));
-    const follows = Math.round(profileVisits * (0.08 * t.followTilt) * (0.7 + rand() * 0.7));
+    const follows = Math.round(profileVisits * (0.08 * t.followTilt) * (0.7 + rand() * 0.7) * hf.follow);
     const durationSec = t.format === "Carousel" ? 0 : 12 + Math.floor(rand() * 40);
     const avgWatchTimeSec = durationSec
       ? Math.min(durationSec, durationSec * (0.4 + rand() * 0.5))
@@ -150,13 +183,14 @@ export function buildDemoData(): CreatorData {
   const snapshots: DaySnapshot[] = [];
   let followers = startFollowers;
   for (let day = DAYS - 1; day >= 0; day--) {
+    const hf = healthFactors(health, day);
     const date = new Date(ANCHOR.getTime() - day * 86400000);
     const key = iso(date);
-    const organic = Math.round(4 + rand() * 10);
+    const organic = Math.round((4 + rand() * 10) * hf.organic);
     followers += (followsByDay.get(key) ?? 0) + organic;
     const dayMedia = media.filter((m) => iso(new Date(m.timestamp)) === key);
     const reach =
-      Math.round(followers * (0.25 + rand() * 0.2)) +
+      Math.round(followers * (0.25 + rand() * 0.2) * hf.view) +
       dayMedia.reduce((s, m) => s + m.insights.reach, 0);
     snapshots.push({
       date: key,
@@ -172,7 +206,7 @@ export function buildDemoData(): CreatorData {
   account.followersCount = followers;
   account.mediaCount = media.length + 140; // lifetime posts
 
-  const demographics: Demographics = {
+  const demographics: Demographics = opts.demographics ?? {
     age: [
       { label: "13-17", value: 6 },
       { label: "18-24", value: 41 },

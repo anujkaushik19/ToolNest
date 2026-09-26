@@ -1,9 +1,11 @@
 import { cookies } from "next/headers";
+import { isDbConfigured } from "@/lib/db";
 
-// MVP session: the long-lived Meta token + IG business account id are kept in an
-// httpOnly cookie. This is fine for local Dev Mode and a single connected
-// account. The next step (DB + daily cron) moves this to encrypted server-side
-// storage so tokens never live in the browser and history can accumulate.
+// Session model has two modes, chosen at runtime by DATABASE_URL:
+//   • No DB (local / ₹0 path): the long-lived Meta token + IG id live in an
+//     httpOnly cookie. Simple, single account, no persistence.
+//   • DB configured: the cookie only holds an opaque connection id; the token
+//     is encrypted at rest server-side and daily history can accumulate.
 
 export const CONNECTION_COOKIE = "tn_ig";
 export const OAUTH_STATE_COOKIE = "tn_ig_state";
@@ -30,8 +32,19 @@ export function decodeConnection(raw: string): Connection | null {
   }
 }
 
-/** Read the current connection from cookies (server components / route handlers). */
-export function getConnection(): Connection | null {
+/** Read the current connection (server components / route handlers). */
+export async function getConnection(): Promise<Connection | null> {
   const raw = cookies().get(CONNECTION_COOKIE)?.value;
-  return raw ? decodeConnection(raw) : null;
+  if (!raw) return null;
+  if (isDbConfigured()) {
+    // Cookie holds an opaque connection id; resolve + decrypt from the DB.
+    const { getConnectionById } = await import("./connectionStore");
+    try {
+      const stored = await getConnectionById(raw);
+      return stored ? { token: stored.token, igId: stored.igId, pageName: stored.pageName } : null;
+    } catch {
+      return null;
+    }
+  }
+  return decodeConnection(raw);
 }

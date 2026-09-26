@@ -128,3 +128,37 @@ export interface Experiment {
   baseline: number;
   successCriteria: string[];
 }
+
+// ---- Monday Brief (deterministic risk detection) ----
+
+export type Severity = "high" | "medium" | "good";
+export type SignalArea =
+  | "growth"
+  | "reach"
+  | "engagement"
+  | "conversion"
+  | "cadence"
+  | "content";
+
+export interface BriefSignal {
+  id: string;
+  severity: Severity;
+  area: SignalArea;
+  title: string; // one-line headline
+  detail: string; // plain-language explanation
+  metric?: string; // e.g. "-18% reach WoW"
+  action?: string; // what to do about it
+}
+
+export interface WeeklyBrief {
+  periodLabel: string; // e.g. "Sep 15 – Sep 21"
+  headline: string;
+  momentum: {
+    followersDelta: number;
+    followersPct: number;
+    reachPct: number;
+    engagementPct: number;
+  };
+  signals: BriefSignal[]; // sorted: high → medium → good
+  focus: string[]; // 1–3 prioritized actions for the week
+}

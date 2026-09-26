@@ -23,6 +23,7 @@
     "next": "14.2.35",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.4.168",
+    "postgres": "^3.4.9",
     "qrcode": "^1.5.4",
     "react": "^18",
     "react-dom": "^18",
