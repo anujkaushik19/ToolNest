@@ -18,6 +18,7 @@ export interface Campaign {
   startDate: string;
   endDate: string;
   goal: string;
+  targetReach: number; // the reach the campaign is committed to deliver
   creatorUsernames: string[];
 }
 
@@ -40,6 +41,7 @@ const CAMPAIGNS: Campaign[] = [
     startDate: "2026-09-08",
     endDate: "2026-10-05",
     goal: "Drive festive-season awareness and saves across lifestyle creators.",
+    targetReach: 3_000_000,
     creatorUsernames: ["fitwithmeera", "streetstyle.sana", "thecuratedhome"],
   },
   {
@@ -50,6 +52,7 @@ const CAMPAIGNS: Campaign[] = [
     startDate: "2026-09-01",
     endDate: "2026-09-30",
     goal: "Educate first-time investors with clear, trustworthy explainers.",
+    targetReach: 4_800_000,
     creatorUsernames: ["finance.by.raj", "learn.with.arjun"],
   },
   {
@@ -60,6 +63,7 @@ const CAMPAIGNS: Campaign[] = [
     startDate: "2026-10-10",
     endDate: "2026-11-02",
     goal: "Build launch-week buzz with fast, trend-led Reels.",
+    targetReach: 800_000,
     creatorUsernames: ["streetstyle.sana", "learn.with.arjun"],
   },
 ];
@@ -130,4 +134,96 @@ export function portfolioSignals(usernames?: string[]): PortfolioSignal[] {
 
 export function healthByUsername(username: string): CreatorHealth | undefined {
   return rosterHealth().find((h) => h.data.account.username === username);
+}
+
+const DAY = 86_400_000;
+
+export type PaceStatus = "not-started" | "behind" | "at-risk" | "on-track" | "ahead" | "complete";
+
+export interface CampaignPacing {
+  status: PaceStatus;
+  daysTotal: number;
+  daysElapsed: number;
+  daysRemaining: number;
+  daysUntilStart: number;
+  timePct: number; // share of the campaign window that has passed
+  delivered: number; // reach delivered so far
+  target: number;
+  goalPct: number; // delivered vs target
+  expected: number; // reach we'd expect by now at a steady pace
+  paceRatio: number; // delivered vs expected (1.0 = exactly on pace)
+}
+
+/** The data's reference "now" — demo shares one anchor; keeps every view coherent. */
+function referenceNow(): number {
+  const asOf = getRoster()[0]?.asOf;
+  return asOf ? new Date(asOf + "T00:00:00Z").getTime() : Date.now();
+}
+
+/** Sum reach delivered by a campaign's creators between start and the cap date. */
+function deliveredReach(usernames: string[], startMs: number, capMs: number): number {
+  const set = new Set(usernames);
+  let total = 0;
+  for (const data of getRoster()) {
+    if (!set.has(data.account.username)) continue;
+    for (const m of data.media) {
+      const t = new Date(m.timestamp).getTime();
+      if (t >= startMs && t <= capMs) total += m.insights.reach;
+    }
+  }
+  return total;
+}
+
+/** Is the campaign on track to hit its reach target, given the time elapsed? */
+export function pacing(campaign: Campaign): CampaignPacing {
+  const now = referenceNow();
+  const start = new Date(campaign.startDate + "T00:00:00Z").getTime();
+  const end = new Date(campaign.endDate + "T00:00:00Z").getTime();
+  const daysTotal = Math.max(1, Math.round((end - start) / DAY));
+
+  // Not started yet.
+  if (now < start) {
+    return {
+      status: "not-started",
+      daysTotal,
+      daysElapsed: 0,
+      daysRemaining: daysTotal,
+      daysUntilStart: Math.ceil((start - now) / DAY),
+      timePct: 0,
+      delivered: 0,
+      target: campaign.targetReach,
+      goalPct: 0,
+      expected: 0,
+      paceRatio: 0,
+    };
+  }
+
+  const cap = Math.min(now, end);
+  const delivered = deliveredReach(campaign.creatorUsernames, start, cap);
+  const elapsed = Math.min(daysTotal, Math.max(0, Math.round((cap - start) / DAY)));
+  const timeFraction = Math.min(1, elapsed / daysTotal);
+  const expected = Math.round(campaign.targetReach * timeFraction);
+  const paceRatio = expected > 0 ? delivered / expected : 0;
+  const goalPct = campaign.targetReach > 0 ? Math.round((delivered / campaign.targetReach) * 100) : 0;
+
+  let status: PaceStatus;
+  if (now >= end) status = "complete";
+  else if (paceRatio >= 1.1) status = "ahead";
+  else if (paceRatio >= 0.95) status = "on-track";
+  else if (paceRatio >= 0.8) status = "at-risk";
+  else status = "behind";
+
+  return {
+    status,
+    daysTotal,
+    daysElapsed: elapsed,
+    daysRemaining: Math.max(0, daysTotal - elapsed),
+    daysUntilStart: 0,
+    timePct: Math.round(timeFraction * 100),
+    delivered,
+    target: campaign.targetReach,
+    goalPct,
+    expected,
+    paceRatio: Math.round(paceRatio * 100) / 100,
+  };
 }

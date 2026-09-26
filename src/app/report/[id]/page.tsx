@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { buildCampaignReport } from "@/lib/studio/report";
 import { PrintButton } from "@/components/studio/PrintButton";
+import { PacingBar } from "@/components/studio/PacingBar";
 import { ArrowRight, Award, Sparkles, Target, TrendingDown, TrendingUp } from "lucide-react";
 
 // Standalone, print-first campaign report. It sits outside the /studio layout on
@@ -36,7 +37,6 @@ export default function CampaignReportPage({ params }: { params: { id: string } 
   if (!report) notFound();
 
   const { campaign, totals, topCreator, bestPost, highlights, optimizations, creators } = report;
-
   return (
     <main className="min-h-screen bg-slate-100 py-8 text-slate-900 print:bg-white print:py-0">
       {/* Toolbar — hidden when printing */}
@@ -76,6 +76,12 @@ export default function CampaignReportPage({ params }: { params: { id: string } 
           <Kpi label="New followers" value={signed(totals.followersDelta)} sub="this week" />
           <Kpi label="Engagement rate" value={`${totals.engagementRate}%`} sub="reach-weighted" />
           <Kpi label="Posts published" value={fmt(totals.posts)} sub={`${totals.creators} creators`} />
+        </section>
+
+        {/* Goal pacing */}
+        <section className="mt-6 rounded-xl border border-slate-200 p-5">
+          <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Goal pacing</div>
+          <PacingBar pacing={report.pacing} />
         </section>
 
         {/* Executive summary */}

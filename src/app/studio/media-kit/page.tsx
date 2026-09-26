@@ -33,7 +33,7 @@ export default async function MediaKitPage() {
         </button>
       </div>
 
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" tilt={false}>
         <div className="bg-gradient-to-br from-indigo-600 to-fuchsia-600 px-8 py-8 text-white">
           <div className="flex items-center gap-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 text-2xl font-bold">

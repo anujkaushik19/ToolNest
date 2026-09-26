@@ -4,6 +4,8 @@ const nextConfig = {
   // uses import.meta.url. The SWC minifier rejects it with "'import.meta' cannot
   // be used outside of module code". Terser handles it correctly.
   swcMinify: false,
+  // three.js ecosystem ships ESM with three/examples subpath imports.
+  transpilePackages: ["three", "@react-three/fiber", "@react-three/drei"],
   webpack: (config) => {
     // @xenova/transformers pulls in Node-only deps that must not be bundled for
     // the browser — it uses onnxruntime-web at runtime instead.

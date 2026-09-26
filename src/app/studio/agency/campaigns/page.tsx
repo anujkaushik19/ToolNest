@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { getCampaigns, portfolioSignals, rosterHealth } from "@/lib/studio/agency";
+import { getCampaigns, pacing, portfolioSignals, rosterHealth } from "@/lib/studio/agency";
 import { Card, PageHeader, compact } from "@/components/studio/ui";
+import { PacingBar } from "@/components/studio/PacingBar";
 import { Users } from "lucide-react";
 
 function fmtRange(start: string, end: string): string {
@@ -34,6 +35,7 @@ export default async function CampaignsPage() {
                 </div>
                 <h3 className="mt-2 text-lg font-bold text-slate-900">{c.name}</h3>
                 <p className="mt-1 text-sm text-slate-600">{c.goal}</p>
+                <PacingBar pacing={pacing(c)} className="mt-4" />
                 <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-slate-500">
                   <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> {c.creatorUsernames.length} creators</span>
                   <span>{compact(reach)} combined reach</span>

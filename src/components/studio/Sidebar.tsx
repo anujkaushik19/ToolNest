@@ -40,26 +40,26 @@ const CREATOR: NavItem[] = [
 export default function Sidebar() {
   const pathname = usePathname();
   return (
-    <aside className="hidden w-60 shrink-0 border-r border-slate-200 bg-white lg:flex lg:flex-col">
+    <aside className="frosted hidden w-60 shrink-0 border-r border-slate-200/70 lg:flex lg:flex-col">
       <div className="flex h-16 items-center gap-2 px-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-sm font-bold text-white">
-          T
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-sm font-bold text-white shadow-[0_6px_16px_-6px_rgba(99,102,241,0.7)]">
+          B
         </div>
         <div className="leading-tight">
-          <div className="text-sm font-bold text-slate-900">Toolnest</div>
+          <div className="text-sm font-bold text-slate-900">BizNest</div>
           <div className="text-[11px] font-medium text-indigo-600">Creator Studio</div>
         </div>
       </div>
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="scroll-light flex-1 space-y-1 overflow-y-auto px-3 py-4">
         <NavGroup label="Agency" items={AGENCY} pathname={pathname} />
         <div className="pt-4">
           <NavGroup label="Creator view" items={CREATOR} pathname={pathname} />
         </div>
       </nav>
-      <div className="border-t border-slate-200 p-4">
+      <div className="border-t border-slate-200/70 p-4">
         <Link
           href="/tools"
-          className="block rounded-xl px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+          className="block rounded-xl px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-white/70 hover:text-slate-900"
         >
           ← Back to tools
         </Link>
@@ -79,13 +79,13 @@ function NavGroup({ label, items, pathname }: { label: string; items: NavItem[];
           <Link
             key={item.href}
             href={item.href}
-            className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition ${
+            className={`group flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition ${
               active
-                ? "bg-indigo-50 text-indigo-700"
-                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                ? "bg-gradient-to-r from-indigo-500/12 to-fuchsia-500/10 text-indigo-700 ring-1 ring-inset ring-indigo-500/15 shadow-[0_1px_2px_rgba(79,70,229,0.06)]"
+                : "text-slate-600 hover:bg-white/70 hover:text-slate-900"
             }`}
           >
-            <Icon className={`h-4 w-4 ${active ? "text-indigo-600" : "text-slate-400"}`} />
+            <Icon className={`h-4 w-4 transition ${active ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600"}`} />
             {item.label}
           </Link>
         );

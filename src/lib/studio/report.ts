@@ -1,4 +1,4 @@
-import { getCampaign, rosterHealth, type Campaign, type CreatorHealth } from "./agency";
+import { getCampaign, pacing, rosterHealth, type Campaign, type CampaignPacing, type CreatorHealth } from "./agency";
 import { benchmark, mediaMetrics } from "./metrics";
 import type { CreatorData, Severity } from "./types";
 
@@ -82,6 +82,7 @@ export interface CampaignReport {
   campaign: Campaign;
   generatedOn: string;
   periodLabel: string;
+  pacing: CampaignPacing;
   totals: {
     creators: number;
     followers: number;
@@ -215,6 +216,7 @@ export function buildCampaignReport(id: string): CampaignReport | null {
     campaign,
     generatedOn: labelDate(asOfDate),
     periodLabel: `${labelDate(weekAgo)} – ${labelDate(asOfDate)}`,
+    pacing: pacing(campaign),
     totals: {
       creators: rows.length,
       followers: totalFollowers,

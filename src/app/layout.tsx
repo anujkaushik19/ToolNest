@@ -14,7 +14,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Toolnest — Every file tool, one place",
+  title: "BizNest — One portal to run your business",
   description:
     "Merge, convert, compress and edit PDFs, documents, images, audio and video — all in one blazing-fast, privacy-first portal. Free to start, no clutter.",
 };

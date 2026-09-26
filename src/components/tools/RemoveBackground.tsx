@@ -213,7 +213,7 @@ export function RemoveBackground() {
     const url = URL.createObjectURL(out);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "toolnest-backgrounds-removed.zip";
+    a.download = "biznest-backgrounds-removed.zip";
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }, []);

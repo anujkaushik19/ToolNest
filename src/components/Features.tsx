@@ -47,7 +47,7 @@ export function Features() {
     <section id="features" className="relative mx-auto max-w-7xl px-4 py-28">
       <Reveal className="mx-auto max-w-2xl text-center">
         <span className="text-sm font-semibold uppercase tracking-widest text-accent-cyan">
-          Why Toolnest
+          Why BizNest
         </span>
         <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
           Built to feel <span className="gradient-text">effortless</span>

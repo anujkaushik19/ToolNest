@@ -13,7 +13,7 @@ async function bootstrap() {
   const port = Number(process.env.PORT) || 8080;
   await app.listen(port);
   // eslint-disable-next-line no-console
-  console.log(`Toolnest gateway listening on :${port}`);
+  console.log(`BizNest gateway listening on :${port}`);
 }
 
 bootstrap();

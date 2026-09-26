@@ -1,4 +1,4 @@
-# Toolnest server-side conversion lane.
+# BizNest server-side conversion lane.
 # gateway  -> public HTTP API the frontend calls
 # gotenberg -> headless LibreOffice conversion engine (internal only)
 services:

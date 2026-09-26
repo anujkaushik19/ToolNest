@@ -30,7 +30,7 @@ export function Footer() {
                 <Layers className="h-5 w-5 text-white" />
               </span>
               <span className="text-lg font-bold tracking-tight">
-                Tool<span className="gradient-text">nest</span>
+                Biz<span className="gradient-text">Nest</span>
               </span>
             </a>
             <p className="mt-4 max-w-xs text-sm text-foreground/50">
@@ -74,7 +74,7 @@ export function Footer() {
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
           <p className="text-sm text-foreground/40">
-            © {new Date().getFullYear()} Toolnest. All rights reserved.
+            © {new Date().getFullYear()} BizNest. All rights reserved.
           </p>
           <p className="text-sm text-foreground/40">
             Made with care for people who work with files.

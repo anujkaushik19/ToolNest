@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check, Copy, Download, Minimize2, ShieldCheck, Sparkles, Wand2 } from "lucide-react";
 
-const SAMPLE = `{"name":"Toolnest","live":true,"tools":["json","jwt","base64"],"count":6}`;
+const SAMPLE = `{"name":"BizNest","live":true,"tools":["json","jwt","base64"],"count":6}`;
 
 export function JsonFormatter() {
   const [input, setInput] = useState("");

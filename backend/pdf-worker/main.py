@@ -1,4 +1,4 @@
-"""Toolnest PDF worker.
+"""BizNest PDF worker.
 
 A tiny internal HTTP service that turns a PDF into an editable Word (.docx)
 document using pdf2docx (PyMuPDF for parsing, python-docx for output).
@@ -14,7 +14,7 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import Response
 from pdf2docx import Converter
 
-app = FastAPI(title="toolnest-pdf-worker")
+app = FastAPI(title="biznest-pdf-worker")
 
 MAX_MB = int(os.environ.get("MAX_FILE_MB", "50"))
 DOCX_MIME = (
@@ -24,7 +24,7 @@ DOCX_MIME = (
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "toolnest-pdf-worker"}
+    return {"status": "ok", "service": "biznest-pdf-worker"}
 
 
 @app.post("/pdf-to-word")

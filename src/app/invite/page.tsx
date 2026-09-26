@@ -101,7 +101,7 @@ export default function InvitePage({
         </div>
 
         <p className="mt-6 text-center text-[11px] text-slate-400">
-          Connecting uses Instagram&apos;s official login. Toolnest never sees your password.
+          Connecting uses Instagram&apos;s official login. BizNest never sees your password.
         </p>
       </div>
     </main>

@@ -74,12 +74,87 @@ body {
   }
 }
 
+/* ============================================================
+   Light dashboard surface — soft woven "canvas" texture + mesh
+   ============================================================ */
+@layer utilities {
+  /* Textured off-white background used behind the whole /studio app.
+     Layered: organic grain (SVG noise) + a faint fabric weave +
+     a very soft colour mesh so it never reads as flat white. */
+  .dashboard-surface {
+    background-color: #f6f5f2;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.038'/%3E%3C/svg%3E"),
+      repeating-linear-gradient(90deg, rgba(40, 34, 66, 0.022) 0 1px, transparent 1px 6px),
+      repeating-linear-gradient(0deg, rgba(40, 34, 66, 0.022) 0 1px, transparent 1px 6px),
+      radial-gradient(64rem 64rem at 8% -12%, rgba(99, 102, 241, 0.08), transparent 60%),
+      radial-gradient(58rem 58rem at 108% 6%, rgba(232, 121, 249, 0.06), transparent 55%),
+      radial-gradient(52rem 52rem at 50% 122%, rgba(34, 211, 238, 0.05), transparent 60%);
+    background-attachment: fixed, fixed, fixed, fixed, fixed, fixed;
+  }
+
+  /* Frosted, elevated card. Slight translucency lets the woven
+     texture whisper through the edges for a tactile, premium feel. */
+  .card-elevated {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow:
+      0 1px 2px rgba(16, 24, 40, 0.04),
+      0 16px 38px -20px rgba(30, 27, 70, 0.28);
+  }
+
+  /* Interactive lift for clickable cards. */
+  .lift {
+    transition:
+      transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .lift:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 1px 2px rgba(16, 24, 40, 0.05),
+      0 26px 50px -22px rgba(79, 70, 229, 0.32);
+  }
+
+  /* Frosted horizontal bar (header / sticky chrome). */
+  .frosted {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: saturate(1.4) blur(14px);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  }
+
+  /* Indigo→fuchsia text used for accents on the light theme. */
+  .brand-text {
+    @apply bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent;
+  }
+
+  /* Light, unobtrusive scrollbar for the dashboard scroll container. */
+  .scroll-light::-webkit-scrollbar {
+    width: 11px;
+  }
+  .scroll-light::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scroll-light::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: 9px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+  .scroll-light::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.5);
+    background-clip: padding-box;
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #05060f;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(#4f46e5, #22d3ee);

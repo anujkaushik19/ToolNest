@@ -19,7 +19,7 @@ export function UpgradePrompt({ feature }: { feature: string }) {
     <div className="flex items-start gap-3 rounded-xl border border-purple-500/30 bg-purple-500/10 px-4 py-3 text-sm text-purple-100/90">
       <Lock className="mt-0.5 h-4 w-4 shrink-0 text-purple-300" />
       <p>
-        <span className="font-semibold text-white">{feature}</span> is a Toolnest
+        <span className="font-semibold text-white">{feature}</span> is a BizNest
         Pro feature. Pro is coming soon — everything else stays free and private.
       </p>
     </div>

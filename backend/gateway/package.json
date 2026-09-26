@@ -1,8 +1,8 @@
 {
-  "name": "toolnest-gateway",
+  "name": "biznest-gateway",
   "version": "0.1.0",
   "private": true,
-  "description": "Toolnest API gateway — routes heavy jobs to conversion workers.",
+  "description": "BizNest API gateway — routes heavy jobs to conversion workers.",
   "scripts": {
     "build": "nest build",
     "start": "node dist/main.js",

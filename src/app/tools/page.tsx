@@ -6,9 +6,9 @@ import { Footer } from "@/components/Footer";
 import { ToolsExplorer } from "@/components/ToolsExplorer";
 
 export const metadata: Metadata = {
-  title: "All Tools — Toolnest",
+  title: "All Tools — BizNest",
   description:
-    "Browse every Toolnest utility: PDF, image, document, video, audio, generators and text tools — all in one place.",
+    "Browse every BizNest utility: PDF, image, document, video, audio, generators and text tools — all in one place.",
 };
 
 export default function ToolsPage() {

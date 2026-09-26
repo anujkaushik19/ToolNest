@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Layers, Menu, Sparkles, X } from "lucide-react";
+import { Layers, Menu, Sparkles, Store, X } from "lucide-react";
 
 const links = [
   { label: "Tools", href: "#tools" },
@@ -42,7 +42,7 @@ export function Navbar() {
               <Layers className="h-5 w-5 text-white" />
             </span>
             <span className="text-lg font-bold tracking-tight">
-              Tool<span className="gradient-text">nest</span>
+              Biz<span className="gradient-text">Nest</span>
             </span>
           </a>
 
@@ -59,6 +59,13 @@ export function Navbar() {
           </div>
 
           <div className="hidden items-center gap-3 md:flex">
+            <a
+              href="/biz"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm font-semibold text-foreground/90 transition-colors hover:bg-white/10"
+            >
+              <Store className="h-4 w-4 text-accent-cyan" />
+              For Business
+            </a>
             <a
               href="/studio"
               className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm font-semibold text-foreground/90 transition-colors hover:bg-white/10"
@@ -108,6 +115,14 @@ export function Navbar() {
                     {l.label}
                   </a>
                 ))}
+                <a
+                  href="/biz"
+                  onClick={() => setOpen(false)}
+                  className="mt-1 flex items-center justify-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-center text-sm font-semibold text-foreground/90"
+                >
+                  <Store className="h-4 w-4 text-accent-cyan" />
+                  For Business
+                </a>
                 <a
                   href="/studio"
                   onClick={() => setOpen(false)}

@@ -47,9 +47,9 @@ export function generateMetadata({
   params: Params;
 }): Metadata {
   const tool = getToolBySlug(params.slug);
-  if (!tool) return { title: "Tool not found — Toolnest" };
+  if (!tool) return { title: "Tool not found — BizNest" };
   return {
-    title: `${tool.name} — Toolnest`,
+    title: `${tool.name} — BizNest`,
     description: tool.description,
   };
 }

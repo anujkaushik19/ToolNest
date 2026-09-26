@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCampaign, portfolioSignals, rosterHealth } from "@/lib/studio/agency";
+import { getCampaign, pacing, portfolioSignals, rosterHealth } from "@/lib/studio/agency";
 import type { CreatorData, Severity } from "@/lib/studio/types";
 import { Card, PageHeader, StatCard, compact, fmt } from "@/components/studio/ui";
+import { PacingBar } from "@/components/studio/PacingBar";
 import { ArrowLeft, ArrowRight, FileText, TriangleAlert } from "lucide-react";
 
 function weekReach(data: CreatorData): number {
@@ -54,6 +55,13 @@ export default async function CampaignDetailPage({ params }: { params: { id: str
         <StatCard label="Reach this week" value={compact(combinedReach)} />
         <StatCard label="Urgent signals" value={String(highs)} hint={`${signals.length} total to review`} />
       </div>
+
+      {/* Pacing toward the reach target */}
+      <Card className="mt-6 p-6">
+        <div className="mb-1 text-sm font-semibold text-slate-900">Goal pacing</div>
+        <p className="mb-4 text-xs text-slate-500">Reach delivered so far vs the {compact(campaign.targetReach)} target for this campaign.</p>
+        <PacingBar pacing={pacing(campaign)} />
+      </Card>
 
       {/* Campaign risks */}
       <div className="mt-8">

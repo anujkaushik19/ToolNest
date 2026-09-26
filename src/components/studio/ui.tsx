@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
+import { TiltCard } from "./motion";
 
 export function fmt(n: number): string {
   return n.toLocaleString("en-US");
@@ -14,14 +15,29 @@ export function compact(n: number): string {
 export function Card({
   children,
   className = "",
+  hover = false,
+  tilt = true,
+  tiltMax = 6,
+  spotlight = "rgba(99,102,241,0.14)",
+  glare = false,
 }: {
   children: ReactNode;
   className?: string;
+  hover?: boolean;
+  /** Cursor-driven 3D tilt (on by default). Set false for large heroes/tables that shouldn't move. */
+  tilt?: boolean;
+  tiltMax?: number;
+  spotlight?: string;
+  glare?: boolean;
 }) {
+  const cls = `card-elevated rounded-2xl ${hover ? "lift" : ""} ${className}`;
+  if (!tilt) {
+    return <div className={cls}>{children}</div>;
+  }
   return (
-    <div className={`rounded-2xl border border-slate-200 bg-white shadow-sm ${className}`}>
+    <TiltCard max={tiltMax} glare={glare} spotlight={spotlight} className={cls}>
       {children}
-    </div>
+    </TiltCard>
   );
 }
 
@@ -76,7 +92,8 @@ export function StatCard({
   chart?: ReactNode;
 }) {
   return (
-    <Card className="p-5">
+    <Card className="relative overflow-hidden p-5">
+      <div className="pointer-events-none absolute -right-8 -top-10 h-24 w-24 rounded-full bg-gradient-to-br from-indigo-500/10 to-fuchsia-500/10 blur-2xl" />
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</span>
         {typeof pct === "number" && <DeltaPill pct={pct} />}
@@ -107,6 +124,7 @@ export function PageHeader({ title, subtitle }: { title: string; subtitle?: stri
     <div className="mb-6">
       <h1 className="text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
       {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
+      <div className="mt-4 h-px w-full bg-gradient-to-r from-indigo-500/25 via-slate-200/70 to-transparent" />
     </div>
   );
 }

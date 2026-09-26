@@ -1,4 +1,4 @@
-"""Toolnest PDF-tools worker.
+"""BizNest PDF-tools worker.
 
 Internal HTTP service that shells out to two battle-tested CLIs:
   - ghostscript (gs) -> shrink/compress a PDF
@@ -15,7 +15,7 @@ import tempfile
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import Response
 
-app = FastAPI(title="toolnest-pdf-tools-worker")
+app = FastAPI(title="biznest-pdf-tools-worker")
 
 MAX_MB = int(os.environ.get("MAX_FILE_MB", "100"))
 PDF_MIME = "application/pdf"
@@ -30,7 +30,7 @@ GS_PRESETS = {
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "toolnest-pdf-tools-worker"}
+    return {"status": "ok", "service": "biznest-pdf-tools-worker"}
 
 
 async def _read_pdf(file: UploadFile) -> bytes:

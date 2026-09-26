@@ -4,13 +4,17 @@ import {
   periodDelta,
   generateInsights,
 } from "@/lib/studio/metrics";
-import { Card, CardHead, PageHeader, StatCard, compact } from "@/components/studio/ui";
+import { Card, CardHead } from "@/components/studio/ui";
 import { Sparkline, TrendArea } from "@/components/studio/Charts";
+import { OverviewHero } from "@/components/studio/OverviewHero";
+import { StatCard3D } from "@/components/studio/StatCard3D";
+import { Stagger, StaggerItem } from "@/components/studio/motion";
+import ReelsShowcase from "@/components/studio/ReelsShowcase";
 
 const toneCls: Record<string, string> = {
-  positive: "border-emerald-200 bg-emerald-50",
-  watch: "border-amber-200 bg-amber-50",
-  negative: "border-rose-200 bg-rose-50",
+  positive: "border-emerald-200 bg-emerald-50/80",
+  watch: "border-amber-200 bg-amber-50/80",
+  negative: "border-rose-200 bg-rose-50/80",
 };
 const toneDot: Record<string, string> = {
   positive: "bg-emerald-500",
@@ -42,73 +46,86 @@ export default async function StudioOverview() {
 
   return (
     <div>
-      <PageHeader
+      <OverviewHero
         title="Overview"
         subtitle="Your last 90 days at a glance — the signals that actually move follower growth."
+        isDemo={data.isDemo}
+        followers={last}
+        followerPct={followerPct}
+        gained={growth.gained}
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
+      <Stagger className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard3D
           label="Followers"
-          value={compact(last)}
+          value={last}
           pct={followerPct}
           hint={`${growth.gained >= 0 ? "+" : ""}${growth.gained.toLocaleString()} in 90 days`}
           chart={<Sparkline data={spark} dataKey="followers" />}
+          accent="indigo"
         />
-        <StatCard
+        <StatCard3D
           label="Reach (30d)"
-          value={compact(reach.cur)}
+          value={reach.cur}
           pct={reach.pct}
           hint="Unique accounts reached"
           chart={<Sparkline data={spark} dataKey="reach" color="#06b6d4" />}
+          accent="cyan"
         />
-        <StatCard
+        <StatCard3D
           label="Profile visits (30d)"
-          value={compact(visits.cur)}
+          value={visits.cur}
           pct={visits.pct}
           hint="The step before a follow"
+          accent="violet"
         />
-        <StatCard
+        <StatCard3D
           label="New follows (30d)"
-          value={compact(follows.cur)}
+          value={follows.cur}
           pct={follows.pct}
           hint="From your content"
+          accent="emerald"
         />
-      </div>
+      </Stagger>
 
-      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHead title="Follower growth" subtitle="Daily, last 90 days" />
-          <div className="px-2 pb-3 pt-2">
-            <TrendArea data={series} xKey="date" yKey="followers" />
-          </div>
-        </Card>
-        <Card>
-          <CardHead title="Reach" subtitle="Daily accounts reached" />
-          <div className="px-2 pb-3 pt-2">
-            <TrendArea data={series} xKey="date" yKey="reach" color="#06b6d4" />
-          </div>
-        </Card>
-      </div>
+      <Stagger className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2" delay={0.1}>
+        <StaggerItem>
+          <Card>
+            <CardHead title="Follower growth" subtitle="Daily, last 90 days" />
+            <div className="px-2 pb-3 pt-2">
+              <TrendArea data={series} xKey="date" yKey="followers" />
+            </div>
+          </Card>
+        </StaggerItem>
+        <StaggerItem>
+          <Card spotlight="rgba(34,211,238,0.16)">
+            <CardHead title="Reach" subtitle="Daily accounts reached" />
+            <div className="px-2 pb-3 pt-2">
+              <TrendArea data={series} xKey="date" yKey="reach" color="#06b6d4" />
+            </div>
+          </Card>
+        </StaggerItem>
+      </Stagger>
+
+      <ReelsShowcase data={data} />
 
       <div className="mt-6">
         <h2 className="mb-3 text-sm font-semibold text-slate-900">What this means</h2>
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <Stagger className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {insights.map((ins) => (
-            <div
-              key={ins.id}
-              className={`rounded-2xl border p-4 ${toneCls[ins.tone]}`}
-            >
-              <div className="flex items-start gap-3">
-                <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${toneDot[ins.tone]}`} />
-                <div>
-                  <div className="text-sm font-semibold text-slate-900">{ins.title}</div>
-                  <p className="mt-1 text-xs leading-relaxed text-slate-600">{ins.detail}</p>
+            <StaggerItem key={ins.id}>
+              <div className={`h-full rounded-2xl border p-4 backdrop-blur-sm transition hover:-translate-y-0.5 ${toneCls[ins.tone]}`}>
+                <div className="flex items-start gap-3">
+                  <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${toneDot[ins.tone]}`} />
+                  <div>
+                    <div className="text-sm font-semibold text-slate-900">{ins.title}</div>
+                    <p className="mt-1 text-xs leading-relaxed text-slate-600">{ins.detail}</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       </div>
     </div>
   );

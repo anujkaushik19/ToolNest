@@ -1,7 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, FileSpreadsheet, TriangleAlert, Upload } from "lucide-react";
+import { Check, FileSpreadsheet, Sparkles, TriangleAlert, Upload } from "lucide-react";
+import { csvToCreatorData } from "@/lib/studio/csv";
+import { generateBrief } from "@/lib/studio/brief";
+import { BriefView } from "./BriefView";
+import type { WeeklyBrief } from "@/lib/studio/types";
 
 // Client-side CSV fallback for creators who can't (or won't) connect Instagram.
 // Everything runs in the browser — nothing is uploaded — so it's private and
@@ -88,6 +92,13 @@ const round1 = (x: number) => Math.round(x * 10) / 10;
 
 export function CsvImport() {
   const [text, setText] = useState("");
+  const [result, setResult] = useState<{ brief: WeeklyBrief; warnings: string[] } | null>(null);
+
+  // Any change to the source data invalidates a previously generated brief.
+  const update = (v: string) => {
+    setText(v);
+    setResult(null);
+  };
 
   const parsed = useMemo(() => (text.trim() ? parseCsv(text) : null), [text]);
   const mapping = useMemo(() => (parsed ? detectMapping(parsed.headers) : {}), [parsed]);
@@ -130,7 +141,7 @@ export function CsvImport() {
         </p>
         <textarea
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => update(e.target.value)}
           rows={6}
           placeholder="Date,Caption,Reach,Views,Likes,Comments,Saves..."
           className="mt-3 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-800 outline-none focus:border-indigo-400"
@@ -146,20 +157,20 @@ export function CsvImport() {
                 const file = e.target.files?.[0];
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = () => setText(String(reader.result || ""));
+                reader.onload = () => update(String(reader.result || ""));
                 reader.readAsText(file);
               }}
             />
           </label>
           <button
             type="button"
-            onClick={() => setText(SAMPLE)}
+            onClick={() => update(SAMPLE)}
             className="text-xs font-semibold text-indigo-600 hover:text-indigo-700"
           >
             Load sample data
           </button>
           {text && (
-            <button type="button" onClick={() => setText("")} className="text-xs font-medium text-slate-400 hover:text-slate-600">
+            <button type="button" onClick={() => update("")} className="text-xs font-medium text-slate-400 hover:text-slate-600">
               Clear
             </button>
           )}
@@ -201,9 +212,42 @@ export function CsvImport() {
               <span className="font-semibold text-slate-900">{summary.best.rate}%</span> engagement — lead with more like it.
             </p>
           )}
+          <button
+            type="button"
+            onClick={() => {
+              if (!parsed) return;
+              const { data, warnings } = csvToCreatorData({ headers: parsed.headers, rows: parsed.rows, mapping });
+              setResult({ brief: generateBrief(data), warnings });
+            }}
+            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500"
+          >
+            <Sparkles className="h-4 w-4" /> Generate Monday Brief
+          </button>
           <p className="mt-3 text-[11px] text-slate-500">
-            This is a preview from your file. Connecting Instagram directly unlocks the full weekly brief and keeps it updating automatically.
+            The brief runs entirely in your browser from this file. Connecting Instagram keeps it updating automatically and unlocks follower-growth signals.
           </p>
+        </div>
+      )}
+
+      {result && (
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-900">
+            <Sparkles className="h-4 w-4 text-indigo-500" /> Your Monday Brief
+          </div>
+          {result.warnings.length > 0 && (
+            <div className="mb-4 space-y-1.5">
+              {result.warnings.map((w, i) => (
+                <div key={i} className="flex items-start gap-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                  <TriangleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" /> {w}
+                </div>
+              ))}
+            </div>
+          )}
+          <BriefView
+            brief={result.brief}
+            accountLabel="From your uploaded data"
+            footnote="Generated from your file with the same transparent rules used for connected accounts — no AI, nothing uploaded."
+          />
         </div>
       )}
     </div>

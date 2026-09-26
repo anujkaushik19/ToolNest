@@ -4,6 +4,6 @@ import { Controller, Get } from "@nestjs/common";
 export class HealthController {
   @Get()
   ok() {
-    return { status: "ok", service: "toolnest-gateway" };
+    return { status: "ok", service: "biznest-gateway" };
   }
 }
